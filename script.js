@@ -2,6 +2,18 @@
  * Game loop, UI, and input wiring
  */
 
+let suppressNextClick = false; // Avoid duplicate click after touch
+
+function getCanvasCoords(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+    };
+}
+
 function init() {
     // Reset state
     state.money = 450; // Starting money
@@ -30,6 +42,7 @@ function init() {
     
     // Event Listeners
     canvas.addEventListener('click', handleCanvasClick);
+    canvas.addEventListener('touchstart', handleCanvasTouchStart, { passive: false });
     
     // Start Loop
     requestAnimationFrame(loop);
@@ -253,16 +266,15 @@ function selectTower(type) {
     if (selected) selected.classList.add('selected');
 }
 
-function handleCanvasClick(e) {
+function handleCanvasClick(e, allowSuppressed = false) {
+    if (!allowSuppressed && suppressNextClick) {
+        suppressNextClick = false;
+        return;
+    }
     if (!state.gameActive) return;
     if (!state.selectedTowerType) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
+    const { x, y } = getCanvasCoords(e.clientX, e.clientY);
 
     // Check cost
     const towerStats = TOWER_TYPES[state.selectedTowerType];
@@ -284,6 +296,18 @@ function handleCanvasClick(e) {
     // Deselect? Or keep selected for multiple placement?
     // Keep selected for better UX
     updateUI();
+}
+
+function handleCanvasTouchStart(e) {
+    const touch = e.touches[0];
+    if (!touch) return;
+    suppressNextClick = true; // Skip the synthetic click that follows touch
+    if (state.selectedTowerType) {
+        handleCanvasClick({ clientX: touch.clientX, clientY: touch.clientY }, true);
+    } else {
+        inspectAt(touch.clientX, touch.clientY);
+    }
+    e.preventDefault();
 }
 
 function isValidPlacement(x, y) {
@@ -346,6 +370,32 @@ function updateUI() {
     document.getElementById('lives').innerText = state.lives;
     document.getElementById('wave').innerText = state.wave;
     document.getElementById('enemies-left').innerText = state.enemies.length + state.enemiesToSpawn;
+}
+
+function inspectAt(clientX, clientY) {
+    if (!state.gameActive) return;
+    if (state.selectedTowerType) return;
+
+    const { x, y } = getCanvasCoords(clientX, clientY);
+
+    // Check enemies
+    for (const enemy of state.enemies) {
+        const dist = Math.hypot(enemy.x - x, enemy.y - y);
+        if (dist < enemy.radius + 10) {
+            updateInfoPanel(`<strong>${enemy.type.toUpperCase()}</strong>: HP ${Math.floor(enemy.hp)}/${Math.floor(enemy.maxHp)}`);
+            return;
+        }
+    }
+
+    // Check towers
+    for (const tower of state.towers) {
+        const dist = Math.hypot(tower.x - x, tower.y - y);
+        if (dist < 20) {
+            const t = tower.stats;
+            updateInfoPanel(`<strong>Torre ${t.name}</strong>: Dano ${t.damage}, Alcance ${t.range}`);
+            return;
+        }
+    }
 }
 
 // Expose selectTower to global scope for HTML onclick
@@ -417,37 +467,13 @@ window.selectTower = function(type) {
     updateInfoPanel(`Selecionado: <strong>${t.name}</strong> - Clique para posicionar.`);
 };
 
-// Add click listener for entities on canvas
+// Add click/touch listener for entities on canvas
 canvas.addEventListener('click', (e) => {
-    if (!state.gameActive) return;
-    
-    // If placing a tower, don't select entity
-    if (state.selectedTowerType) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-
-    // Check enemies
-    for (const enemy of state.enemies) {
-        const dist = Math.hypot(enemy.x - x, enemy.y - y);
-        if (dist < enemy.radius + 10) {
-            updateInfoPanel(`<strong>${enemy.type.toUpperCase()}</strong>: HP ${Math.floor(enemy.hp)}/${Math.floor(enemy.maxHp)}`);
-            return;
-        }
+    if (suppressNextClick) {
+        suppressNextClick = false;
+        return;
     }
-
-    // Check towers
-    for (const tower of state.towers) {
-        const dist = Math.hypot(tower.x - x, tower.y - y);
-        if (dist < 20) {
-            const t = tower.stats;
-            updateInfoPanel(`<strong>Torre ${t.name}</strong>: Dano ${t.damage}, Alcance ${t.range}`);
-            return;
-        }
-    }
+    inspectAt(e.clientX, e.clientY);
 });
 
 // Init

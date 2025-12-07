@@ -7,56 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="top-bar">
+        <div class="stat">💰 <span id="money">100</span></div>
+        <div class="stat">❤️ <span id="lives">20</span></div>
+        <div class="stat">🌊 Onda: <span id="wave">1</span></div>
+        <div class="stat">👽 Aliens: <span id="enemies-left">0</span></div>
+        <button id="guide-btn" onclick="toggleGuide()">📘 Guia</button>
+    </div>
+
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
         
         <div id="ui-layer">
-            <div id="top-bar">
-                <div class="stat">💰 <span id="money">100</span></div>
-                <div class="stat">❤️ <span id="lives">20</span></div>
-                <div class="stat">🌊 Onda: <span id="wave">1</span></div>
-                <div class="stat">👽 Aliens: <span id="enemies-left">0</span></div>
-                <button id="guide-btn" onclick="toggleGuide()">📘 Guia</button>
-            </div>
-
-            <div id="tower-selection">
-                <div class="tower-card" data-type="archer" onclick="selectTower('archer')">
-                    <div class="icon archer-icon">🏹</div>
-                    <div class="info">
-                        <span class="name">Arqueiro</span>
-                        <span class="cost">50</span>
-                    </div>
-                </div>
-                <div class="tower-card" data-type="cannon" onclick="selectTower('cannon')">
-                    <div class="icon cannon-icon">💣</div>
-                    <div class="info">
-                        <span class="name">Canhão</span>
-                        <span class="cost">150</span>
-                    </div>
-                </div>
-                <div class="tower-card" data-type="mage" onclick="selectTower('mage')">
-                    <div class="icon mage-icon">✨</div>
-                    <div class="info">
-                        <span class="name">Mago</span>
-                        <span class="cost">200</span>
-                    </div>
-                </div>
-                <div class="tower-card" data-type="sniper" onclick="selectTower('sniper')">
-                    <div class="icon sniper-icon">🎯</div>
-                    <div class="info">
-                        <span class="name">Sniper</span>
-                        <span class="cost">300</span>
-                    </div>
-                </div>
-                <div class="tower-card" data-type="bomb" onclick="selectTower('bomb')">
-                    <div class="icon bomb-icon">🧨</div>
-                    <div class="info">
-                        <span class="name">Bomba</span>
-                        <span class="cost">25</span>
-                    </div>
-                </div>
-            </div>
-
             <div id="game-over-screen" class="hidden">
                 <h1>GAME OVER</h1>
                 <p>Pontuação Final: <span id="final-score">0</span></p>
@@ -81,6 +43,44 @@
                 <h1>Earth Defense</h1>
                 <p>Defenda a Terra da invasão alienígena!</p>
                 <button onclick="startGame()">Começar Jogo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tower-selection">
+        <div class="tower-card" data-type="archer" onclick="selectTower('archer')">
+            <div class="icon archer-icon">🏹</div>
+            <div class="info">
+                <span class="name">Arqueiro</span>
+                <span class="cost">50</span>
+            </div>
+        </div>
+        <div class="tower-card" data-type="cannon" onclick="selectTower('cannon')">
+            <div class="icon cannon-icon">💣</div>
+            <div class="info">
+                <span class="name">Canhão</span>
+                <span class="cost">150</span>
+            </div>
+        </div>
+        <div class="tower-card" data-type="mage" onclick="selectTower('mage')">
+            <div class="icon mage-icon">✨</div>
+            <div class="info">
+                <span class="name">Mago</span>
+                <span class="cost">200</span>
+            </div>
+        </div>
+        <div class="tower-card" data-type="sniper" onclick="selectTower('sniper')">
+            <div class="icon sniper-icon">🎯</div>
+            <div class="info">
+                <span class="name">Sniper</span>
+                <span class="cost">300</span>
+            </div>
+        </div>
+        <div class="tower-card" data-type="bomb" onclick="selectTower('bomb')">
+            <div class="icon bomb-icon">🧨</div>
+            <div class="info">
+                <span class="name">Bomba</span>
+                <span class="cost">25</span>
             </div>
         </div>
     </div>
