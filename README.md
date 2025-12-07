@@ -2,6 +2,9 @@
 
 Tower defense 2D em canvas onde você protege a Terra de ondas de alienígenas enquanto constrói e posiciona defesas estratégicas.
 
+## Jogue agora
+https://earthdefensegame.vercel.app
+
 ## Objetivo
 - Impedir que os inimigos alcancem a base (a Terra) sobrevivendo ao máximo de ondas.
 - Gerenciar recursos para comprar e posicionar torres, evoluindo a defesa a cada rodada.
