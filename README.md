@@ -13,9 +13,13 @@ Tower defense 2D em canvas onde você protege a Terra de ondas de alienígenas e
 - Web Audio API para trilha e efeitos sonoros leves.
 
 ## Estrutura rápida
-- `index.html`: markup e camada de UI (HUD, seleção de torres, telas de início e game over).
+- `index.html`: markup e camada de UI (HUD, seleção de torres, telas de início e game over) + carga dos scripts.
 - `style.css`: estilos gerais, painel de informações, modal de guia.
-- `script.js`: lógica principal (loop, torres, inimigos, projéteis, áudio, guia interativo).
+- `constants.js`: dimensões, caminho dos inimigos e definições de torres/inimigos.
+- `state.js`: referência ao canvas/contexto e estado global do jogo.
+- `audio.js`: BGM e efeitos sonoros simples (Web Audio API).
+- `particle.js`, `projectile.js`, `enemy.js`, `tower.js`: entidades visuais/lógicas.
+- `script.js`: loop principal, UI, input e orquestração das entidades.
 
 ## Como jogar
 1) Clique em **Começar Jogo** para iniciar a primeira onda.
